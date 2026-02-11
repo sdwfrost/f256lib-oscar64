@@ -1,0 +1,20 @@
+# oscar64 build artifacts
+*.pgz
+*.asm
+*.int
+*.lbl
+*.map
+*.bin
+
+# Keep legitimate asset .bin files
+!**/assets/**/*.bin
+!**/generated/**/*.bin
+!**/tiles/**/*.bin
+
+# macOS
+.DS_Store
+
+# Editor
+*.swp
+*.swo
+*~

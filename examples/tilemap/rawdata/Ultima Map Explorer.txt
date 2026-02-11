@@ -1,0 +1,6 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Link to Ultima IV/V Map Explorer
+Type=Link
+URL=http://grumdrig.com/u4map/
+Icon=text-html
