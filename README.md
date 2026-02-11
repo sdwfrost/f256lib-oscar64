@@ -4,9 +4,9 @@ A port of [f256lib](https://github.com/FoenixRetro/f256-dev) to the [oscar64](ht
 
 ## Attribution
 
-- **f256lib** — the original F256 hardware abstraction library by Scott Duensing ([f256-dev](https://github.com/FoenixRetro/f256-dev)), licensed under the MIT License. The library code in `f256lib/` is adapted from this project for compatibility with oscar64.
+- **f256lib** — the original F256 hardware abstraction library by Scott Duensing, licensed under the MIT License. The library code in `f256lib/` is adapted from this project for compatibility with oscar64.
 
-- **Doodles** — the example programs in `doodles/` are ported from Michael Juneau's [F256KsimpleCdoodles](https://github.com/Mu0n/F256KsimpleCdoodles), a collection of small programs and experiments for the F256K. These were originally written for the llvm-mos/clang toolchain.
+- **Doodles** — the example programs in `doodles/` are ported from mu0n's [F256KsimpleCdoodles](https://github.com/Mu0n/F256KsimpleCdoodles), a collection of small programs and experiments for the F256K. These were originally written for the llvm-mos/clang toolchain.
 
 - **Examples** — the programs in `examples/` are adapted from the f256-dev examples by Scott Duensing.
 
