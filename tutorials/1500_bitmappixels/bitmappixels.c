@@ -56,18 +56,19 @@ int main(int argc, char *argv[])
 	bitmapClear();
 	bitmapSetColor(1);
 
-	int w = 0;
+	byte w = 0;
+	byte phase = 0;
 	for (;;)
 	{
 		int x = 160 + SinTab[(w + 64) & 255] * 80 / 256
-		            + SinTab[(w * 5 + 64) & 255] * 20 / 256
+		            + SinTab[(w * 5 + phase + 64) & 255] * 20 / 256
 		            + SinTab[(w * 13 + 64) & 255] * 10 / 256;
-		int y = 120 + SinTab[(w * 2) & 255] * 80 / 256
+		int y = 120 + SinTab[(w * 2 + phase) & 255] * 80 / 256
 		            + SinTab[(w * 7) & 255] * 20 / 256
 		            + SinTab[(w * 11) & 255] * 10 / 256;
 
 		bitmapPutPixel((uint16_t)x, (uint16_t)y);
-		w++;
+		if (++w == 0) phase++;
 	}
 
 	return 0;
