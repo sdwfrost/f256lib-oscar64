@@ -18,13 +18,17 @@ static byte _kbd_has_buf;
 static char _kbd_map_event(void) {
 	if (kernelEventData.type != kernelEvent(key.PRESSED))
 		return 0;
-	if (kernelEventData.u.key.flags)
-		return 0;
 
 	char c = kernelEventData.u.key.ascii;
-	if (c) return c;
+	if (c) {
+		// For printable keys, skip if modifier flags are set
+		if (kernelEventData.u.key.flags)
+			return 0;
+		return c;
+	}
 
 	// Arrow keys have no ASCII — map from raw scancode
+	// (checked regardless of flags since arrows are extended PS/2 keys)
 	switch (kernelEventData.u.key.raw) {
 	case 0x75: return KEY_UP;
 	case 0x72: return KEY_DOWN;
