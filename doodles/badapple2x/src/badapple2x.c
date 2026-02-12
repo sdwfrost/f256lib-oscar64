@@ -24,7 +24,7 @@ void read8KChunk(void *buf, FILE *f)
 	uint16_t i;
 	for(i=0;i<64;i++)
 		{
-		fread((void *)(buf+i*0x80), sizeof(uint8_t), 128, f); //read 128 bytes at a time, since there's a hard limit of 255 reads at a time. 64x128 = 8k = 8192 bytes
+		fread((void *)((char *)buf+i*0x80), sizeof(uint8_t), 128, f); //read 128 bytes at a time, since there's a hard limit of 255 reads at a time. 64x128 = 8k = 8192 bytes
 		}
 }
 

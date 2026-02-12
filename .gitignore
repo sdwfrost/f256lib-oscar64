@@ -1,5 +1,4 @@
 # oscar64 build artifacts
-*.pgz
 *.asm
 *.int
 *.lbl
@@ -10,6 +9,7 @@
 !**/assets/**/*.bin
 !**/generated/**/*.bin
 !**/tiles/**/*.bin
+!**/gfx/**/*.bin
 
 # macOS
 .DS_Store

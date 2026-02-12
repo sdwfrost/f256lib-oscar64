@@ -931,7 +931,7 @@ int main(int argc, char *argv[]) {
 	bool nextIsSpeed = false; //detects if we're at the end of a note on or off trio of bytes
 	bool isHit = false; // true is hit, false is released
 	POKE(1,0);
-	uint8_t storedNote; //stored values when twinlinked
+	uint8_t storedNote = 0; //stored values when twinlinked
 	uint8_t lastNote = 0; // for monophonic chips, store this to mute last note before doing a new one
 	uint8_t bufferIndex=0;
 	bool opl3Active = false;

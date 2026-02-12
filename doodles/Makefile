@@ -83,7 +83,6 @@ ALL_TARGETS = \
 	tileTest/tileTest.pgz \
 	timer0/timer0.pgz \
 	timer1/timer1.pgz \
-	toobig/toobig.pgz \
 	vgmplayer/vgmplayer.pgz \
 	vgmplayer2/vgmplayer2.pgz \
 	via/via.pgz \
@@ -313,9 +312,6 @@ timer0/timer0.pgz: timer0/src/timer0.c $(DEPS)
 	$(OSCAR64) $(FLAGS) -o=$@ $<
 
 timer1/timer1.pgz: timer1/src/timer1.c $(DEPS)
-	$(OSCAR64) $(FLAGS) -o=$@ $<
-
-toobig/toobig.pgz: toobig/src/toobig.c $(DEPS)
 	$(OSCAR64) $(FLAGS) -o=$@ $<
 
 vgmplayer/vgmplayer.pgz: vgmplayer/src/vgmplayer.c $(DEPS)

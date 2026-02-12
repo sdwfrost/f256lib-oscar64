@@ -423,7 +423,7 @@ void playmidiND(void) //non-destructive version
 	uint16_t lowestTrack=0;
 	uint16_t localTotalLeft=0;
 	uint32_t lowestTimeFound = 0xFFFFFFFF;
-	uint32_t whereTo, whereToLowest; //in far memory, keeps adress of event to send
+	uint32_t whereTo, whereToLowest = 0; //in far memory, keeps adress of event to send
 	uint16_t trackcount;
 	uint32_t delta; //used to compare times
 	uint32_t overFlow;

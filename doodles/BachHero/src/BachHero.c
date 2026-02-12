@@ -482,7 +482,7 @@ int main(int argc, char *argv[]) {
 	uint8_t offX=0, offY=128;
 	uint8_t sinx=0, siny=0;
 	uint8_t noteCursor=0;
-	uint8_t recByte, detectedNote, lastCmd=0x90, storedNote;
+	uint8_t recByte, detectedNote, lastCmd=0x90, storedNote=0;
 	bool isSongActive = false; //real time mode
 	bool isTutorialAfterFirst = false; // after first automatic note
 	bool isTutorial = false; //tutorial mode
@@ -684,11 +684,11 @@ int main(int argc, char *argv[]) {
 						}
 						break;
 					case 0xb8: //left
-					midiNoteOff(PLY_MIDI_CHAN, KeyCodesToMIDINotes[kernelEventData.u.key.raw]+octaveShift*12, 0x6f, false);
+					midiNoteOff(PLY_MIDI_CHAN, storedNote+octaveShift*12, 0x6f, false);
 						if(octaveShift>-3 && midiPSG)octaveShift--;
 						break;
 					case 0xb9: //right
-					midiNoteOff(PLY_MIDI_CHAN, KeyCodesToMIDINotes[kernelEventData.u.key.raw]+octaveShift*12, 0x6f, false);
+					midiNoteOff(PLY_MIDI_CHAN, storedNote+octaveShift*12, 0x6f, false);
 						if(octaveShift<4 && midiPSG)octaveShift++;
 						break;
 						/*

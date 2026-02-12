@@ -900,7 +900,7 @@ bool isHit = false; // true is hit, false is released, distinguishes betwee Note
 bool opl3Active = false;
 bool psgActive = false;
 bool sidActive = false;
-uint8_t storedNote; //stored values when twinlinked
+uint8_t storedNote = 0; //stored values when twinlinked
 uint8_t lastNote = 0; // for monophonic chips, store this to mute last note before doing
 
 uint16_t i,absX,absY;

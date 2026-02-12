@@ -32,7 +32,7 @@ void localMidiNoteOn(uint8_t wantNote, uint8_t chan) {
 }
 
 int main(int argc, char *argv[]) {
-	uint8_t noteCursor = 0, currentNote;
+	uint8_t noteCursor = 0, currentNote = 0;
 	bool isScaleActive = false;
 
 	setInstruments();
