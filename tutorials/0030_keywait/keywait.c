@@ -15,5 +15,6 @@ int main(int argc, char *argv[])
 	textPutChar(c);
 	textPutChar('\n');
 
+	keyboardGetChar();
 	return 0;
 }

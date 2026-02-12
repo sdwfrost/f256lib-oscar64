@@ -236,13 +236,12 @@ void textPutChar(char c) {
 	if (c == 10 || c == 13) {
 		textNewline();
 	} else {
-		volatile byte *vram = (byte *)TEXT_MATRIX;
-		uint16_t       pos = (uint16_t)_row * (uint16_t)_MAX_COL + _col;
+		volatile byte *vram = (byte *)mathUnsignedAddition(TEXT_MATRIX, mathUnsignedMultiply(_MAX_COL, _row));
 
 		POKE(MMU_IO_CTRL, MMU_IO_COLOR);
-		vram[pos] = _ccolor;
+		vram[_col] = _ccolor;
 		POKE(MMU_IO_CTRL, MMU_IO_TEXT);
-		vram[pos] = (byte)c;
+		vram[_col] = (byte)c;
 		POKE(MMU_IO_CTRL, MMU_IO_PAGE_0);
 
 		textAdvanceCursor();

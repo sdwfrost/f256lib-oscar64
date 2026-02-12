@@ -18,10 +18,6 @@
 #define KEY_RIGHT  0x83
 
 
-extern const char keyboardScanToAscii[128];
-extern const char keyboardScanToAsciiShift[128];
-
-
 char     keyboardHit(void);
 byte     keyboardGetScan(void);
 char     keyboardGetChar(void);
