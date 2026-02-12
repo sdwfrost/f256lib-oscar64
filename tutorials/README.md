@@ -200,7 +200,7 @@ Each tutorial compiles to a `.pgz` file that can be loaded on the F256K or in th
 | Screen size | 40×25 (320×200) | 80×60 (320×240) |
 | Text colors | PETSCII codes | `textSetColor(fg, bg)` with Apple IIgs palette |
 | Sprites | 8 hardware, 24×21 1-bit | 64 hardware, 24×24 8bpp |
-| Sprite coords | Screen-relative | +32 offset (via `sprite_util.h`) |
+| Sprite coords | Screen-relative | +32 offset (via f256lib C64 sprite helpers) |
 | Collision | VIC-II hardware register | Software bounding-box |
 | Joystick | CIA port reads | Keyboard arrow keys |
 | Bitmap | 1-bit hires/multicolor | 8bpp with CLUT |
@@ -212,5 +212,4 @@ Each tutorial compiles to a `.pgz` file that can be loaded on the F256K or in th
 
 ## Shared Files
 
-- **`sprite_util.h`** — C64→8bpp sprite expansion, sprite management wrappers, collision detection
 - **`adventure.h` / `adventure.c`** — Shared adventure engine (per-tutorial copies with progressive features)

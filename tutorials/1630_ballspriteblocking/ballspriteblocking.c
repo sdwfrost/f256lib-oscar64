@@ -2,7 +2,6 @@
 // New tutorial for F256K using f256lib
 
 #include "f256lib.h"
-#include "sprite_util.h"
 #include <stdlib.h>
 
 const char SpriteImage[64] = {
@@ -75,11 +74,11 @@ int main(int argc, char *argv[])
 		textPutChar(160);
 	}
 
-	sprite_init();
-	sprite_expand_c64(SpriteImage, 0, 1);
+	spriteInit();
+	spriteExpand(SpriteImage, 0, 1);
 
 	int spx = 140, spy = 100;
-	sprite_set(0, true, spx, spy, 0, 1);
+	spriteSet(0, true, spx, spy, 0, 1);
 
 	for (;;)
 	{
@@ -94,7 +93,7 @@ int main(int argc, char *argv[])
 		if (c == KEY_DOWN  && spy < 219 && !is_blocked(spx, spy + 1))
 			spy++;
 
-		sprite_move(0, spx, spy);
+		spriteMove(0, spx, spy);
 		graphicsWaitVerticalBlank();
 	}
 

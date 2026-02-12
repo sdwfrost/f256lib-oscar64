@@ -2,7 +2,6 @@
 // Ported from OscarTutorials to F256K using f256lib
 
 #include "f256lib.h"
-#include "sprite_util.h"
 #include <string.h>
 
 static const char SpriteImage[64] = {
@@ -41,11 +40,11 @@ static const signed char sintab[256] = {
 int main(int argc, char *argv[])
 {
 	textClear();
-	sprite_init();
+	spriteInit();
 
-	unsigned char img = sprite_expand_c64(SpriteImage, 0, 1);
-	sprite_set(0, true, CenterX, CenterY, 0, 1);
-	sprite_set(1, true, CenterX, CenterY, 0, 0);
+	unsigned char img = spriteExpand(SpriteImage, 0, 1);
+	spriteSet(0, true, CenterX, CenterY, 0, 1);
+	spriteSet(1, true, CenterX, CenterY, 0, 0);
 
 	char w = 0;
 	for (;;)
@@ -55,7 +54,7 @@ int main(int argc, char *argv[])
 		int sy = sintab[(unsigned char)w];
 		graphicsSetBorderC64Color(0);
 
-		sprite_move(0, CenterX + sx, CenterY + sy);
+		spriteMove(0, CenterX + sx, CenterY + sy);
 		w++;
 
 		graphicsWaitVerticalBlank();

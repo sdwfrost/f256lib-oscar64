@@ -2,7 +2,6 @@
 // Ported from OscarTutorials to F256K using f256lib
 
 #include "f256lib.h"
-#include "sprite_util.h"
 #include <string.h>
 
 static unsigned usqrt(unsigned n)
@@ -33,11 +32,11 @@ static const int CenterY = 108;  // 120 - 12
 int main(int argc, char *argv[])
 {
 	textClear();
-	sprite_init();
+	spriteInit();
 
-	unsigned char img = sprite_expand_c64(SpriteImage, 0, 1);
-	sprite_set(0, true, CenterX, CenterY, 0, 1);
-	sprite_set(1, true, CenterX, CenterY, 0, 0);
+	unsigned char img = spriteExpand(SpriteImage, 0, 1);
+	spriteSet(0, true, CenterX, CenterY, 0, 1);
+	spriteSet(1, true, CenterX, CenterY, 0, 0);
 
 	int sx = 0, sy = 0;
 	for (;;)
@@ -47,7 +46,7 @@ int main(int argc, char *argv[])
 		if (ch == KEY_RIGHT) sx++;
 		if (ch == KEY_UP) sy--;
 		if (ch == KEY_DOWN) sy++;
-		sprite_move(0, CenterX + sx, CenterY + sy);
+		spriteMove(0, CenterX + sx, CenterY + sy);
 
 		graphicsSetBorderC64Color(2);
 		int d = usqrt(sx * sx + sy * sy);

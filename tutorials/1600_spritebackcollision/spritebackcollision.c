@@ -4,7 +4,6 @@
 // Move a sprite with arrow keys. Detects collision with background chars.
 
 #include "f256lib.h"
-#include "sprite_util.h"
 #include <stdlib.h>
 
 static const char spimage[63] = {
@@ -56,11 +55,11 @@ int main(int argc, char *argv[])
 		textPutChar(160);  // filled block char
 	}
 
-	sprite_init();
-	sprite_expand_c64(spimage, 0, 1);  // white
+	spriteInit();
+	spriteExpand(spimage, 0, 1);  // white
 
 	int spx = 160, spy = 120;
-	sprite_set(0, true, spx, spy, 0, 1);
+	spriteSet(0, true, spx, spy, 0, 1);
 
 	for (;;)
 	{
@@ -70,7 +69,7 @@ int main(int argc, char *argv[])
 		if (c == KEY_UP    && spy > 0)   spy--;
 		if (c == KEY_DOWN  && spy < 232) spy++;
 
-		sprite_move(0, spx, spy);
+		spriteMove(0, spx, spy);
 
 		// Check four corners of 8x8 sprite area
 		byte tl = char_at_pix(spx, spy);
@@ -79,7 +78,7 @@ int main(int argc, char *argv[])
 		byte br = char_at_pix(spx + 7, spy + 7);
 
 		byte collided = (tl | tr | bl | br) >= 128;
-		sprite_recolor(0, spimage, collided ? 2 : 1);  // red on collision, white otherwise
+		spriteRecolor(0, spimage, collided ? 2 : 1);  // red on collision, white otherwise
 
 		graphicsWaitVerticalBlank();
 	}

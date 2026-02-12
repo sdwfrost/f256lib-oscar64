@@ -2,7 +2,6 @@
 // Ported from OscarTutorials to F256K using f256lib
 
 #include "f256lib.h"
-#include "sprite_util.h"
 
 const char SpriteImage[4][64] = {
 	{
@@ -98,24 +97,24 @@ const char SpriteImage[4][64] = {
 
 int main(int argc, char *argv[])
 {
-	sprite_init();
+	spriteInit();
 
 	// Expand all 4 animation frames into slots 0-3
 	for (byte f = 0; f < 4; f++)
-		sprite_expand_c64(SpriteImage[f], f, 1);  // white
+		spriteExpand(SpriteImage[f], f, 1);  // white
 
 	// Set sprites on screen
 	for (byte i = 0; i < 8; i++)
-		sprite_set(i, true, 20 + 30 * i, 40 + 20 * i, 0, 1);
+		spriteSet(i, true, 20 + 30 * i, 40 + 20 * i, 0, 1);
 
 	byte y = 0;
 	while (true)
 	{
 		for (byte i = 0; i < 8; i++)
 		{
-			sprite_move(i, 20 + 30 * i, 40 + 20 * i + y);
+			spriteMove(i, 20 + 30 * i, 40 + 20 * i + y);
 			byte frame = ((y >> 2) + i) & 3;
-			sprite_image(i, frame);
+			spriteSetImage(i, frame);
 		}
 		y++;
 		graphicsWaitVerticalBlank();

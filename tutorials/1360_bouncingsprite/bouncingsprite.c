@@ -2,7 +2,6 @@
 // Ported from OscarTutorials to F256K using f256lib
 
 #include "f256lib.h"
-#include "sprite_util.h"
 #include <stdlib.h>
 
 // Integer square root (replaces fixmath usqrt)
@@ -66,7 +65,7 @@ struct RefSprite {
 
 int main(int argc, char *argv[])
 {
-	sprite_init();
+	spriteInit();
 
 	for (byte i = 0; i < 8; i++)
 	{
@@ -75,13 +74,13 @@ int main(int argc, char *argv[])
 		sprites[i].vx = rand() % 101 - 50;
 		sprites[i].vy = rand() % 101 - 50;
 
-		sprite_expand_c64(SpriteImage, i, i + 7);
-		sprite_set(i, true, sprites[i].sx >> FBITS, sprites[i].sy >> FBITS, i, i + 7);
+		spriteExpand(SpriteImage, i, i + 7);
+		spriteSet(i, true, sprites[i].sx >> FBITS, sprites[i].sy >> FBITS, i, i + 7);
 	}
 
 	while (true)
 	{
-		byte collflags = sprite_check_collisions();
+		byte collflags = spriteCheckCollisions();
 
 		for (byte i = 0; i < 8; i++)
 		{
@@ -100,7 +99,7 @@ int main(int argc, char *argv[])
 			else
 				sprites[i].sy = sy;
 
-			sprite_move(i, sprites[i].sx >> FBITS, sprites[i].sy >> FBITS);
+			spriteMove(i, sprites[i].sx >> FBITS, sprites[i].sy >> FBITS);
 
 			if (collflags & (1 << i))
 			{

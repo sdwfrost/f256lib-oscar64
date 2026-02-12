@@ -2,7 +2,6 @@
 // Ported from OscarTutorials to F256K using f256lib
 
 #include "f256lib.h"
-#include "sprite_util.h"
 #include <stdlib.h>
 
 const char SpriteImage[64] = {
@@ -37,7 +36,7 @@ struct RefSprite {
 
 int main(int argc, char *argv[])
 {
-	sprite_init();
+	spriteInit();
 
 	for (byte i = 0; i < 8; i++)
 	{
@@ -46,13 +45,13 @@ int main(int argc, char *argv[])
 		sprites[i].vx = rand() % 81 - 40;
 		sprites[i].vy = rand() % 81 - 40;
 
-		sprite_expand_c64(SpriteImage, i, 0);
-		sprite_set(i, true, sprites[i].sx >> FBITS, sprites[i].sy >> FBITS, i, 0);
+		spriteExpand(SpriteImage, i, 0);
+		spriteSet(i, true, sprites[i].sx >> FBITS, sprites[i].sy >> FBITS, i, 0);
 	}
 
 	while (true)
 	{
-		byte collflags = sprite_check_collisions();
+		byte collflags = spriteCheckCollisions();
 
 		for (byte i = 0; i < 8; i++)
 		{
@@ -69,10 +68,10 @@ int main(int argc, char *argv[])
 			else
 				sprites[i].sy = sy;
 
-			sprite_move(i, sprites[i].sx >> FBITS, sprites[i].sy >> FBITS);
+			spriteMove(i, sprites[i].sx >> FBITS, sprites[i].sy >> FBITS);
 
 			byte new_color = (collflags & (1 << i)) ? 7 : 1;
-			sprite_recolor(i, SpriteImage, new_color);
+			spriteRecolor(i, SpriteImage, new_color);
 		}
 		graphicsWaitVerticalBlank();
 	}

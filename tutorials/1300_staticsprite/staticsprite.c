@@ -2,7 +2,6 @@
 // Ported from OscarTutorials to F256K using f256lib
 
 #include "f256lib.h"
-#include "sprite_util.h"
 
 const char SpriteImage[64] = {
 	0b00000000, 0b11111000, 0b00000000,
@@ -30,12 +29,12 @@ const char SpriteImage[64] = {
 
 int main(int argc, char *argv[])
 {
-	sprite_init();
+	spriteInit();
 
 	for (byte i = 0; i < 8; i++)
 	{
-		sprite_expand_c64(SpriteImage, i, i + 1);
-		sprite_set(i, true, 30 + 30 * i, 40 + 20 * i, i, i + 1);
+		spriteExpand(SpriteImage, i, i + 1);
+		spriteSet(i, true, 30 + 30 * i, 40 + 20 * i, i, i + 1);
 	}
 
 	while (true)

@@ -8,7 +8,6 @@ all:
 		pgz="$${src%.c}.pgz"; \
 		dir="$$(dirname $$src)"; \
 		if [ "$$src" -nt "$$pgz" ] || [ ! -f "$$pgz" ] || \
-		   [ sprite_util.h -nt "$$pgz" ] 2>/dev/null || \
 		   (ls "$$dir"/*.h >/dev/null 2>&1 && [ "$$(find "$$dir" -name '*.h' -newer "$$pgz" 2>/dev/null)" ]); then \
 			echo "$(OSCAR64) $(FLAGS) -o=$$pgz $$src"; \
 			$(OSCAR64) $(FLAGS) -o="$$pgz" "$$src" || true; \
