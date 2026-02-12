@@ -1,23 +1,34 @@
 // 0110 ColorMem - Direct color memory access
 // Ported from OscarTutorials to F256K using f256lib
 //
-// Fills screen with character 'A' and cycles through colors.
+// Fills screen with spaces and sets vertical colour bars via color memory.
 
 #include "f256lib.h"
 
 int main(int argc, char *argv[])
 {
-	volatile byte *vram = (volatile byte *)0xc000;
+	volatile byte *vram = (volatile byte *)TEXT_MATRIX;
+	unsigned int i;
+	byte x;
 
-	// Fill text matrix with 'A' (I/O page 2)
+	// Enable per-cell background colours
+	textEnableBackgroundColors(true);
+
+	// Fill screen with spaces
 	POKE(MMU_IO_CTRL, MMU_IO_TEXT);
-	for (unsigned int i = 0; i < 80 * 30; i++)
-		vram[i] = 'A';
+	for (i = 0; i < 80 * 30; i++)
+		vram[i] = ' ';
 
-	// Set each cell to a different color (I/O page 3)
+	// Vertical colour bars (fg and bg set to same colour = solid cell)
 	POKE(MMU_IO_CTRL, MMU_IO_COLOR);
-	for (unsigned int i = 0; i < 80 * 30; i++)
-		vram[i] = (byte)(((i & 0x0F) << 4) | 0);  // cycling fg colors, black bg
+	x = 0;
+	for (i = 0; i < 80 * 30; i++)
+	{
+		byte color = x / 5;
+		vram[i] = (color << 4) | color;
+		x++;
+		if (x == 80) x = 0;
+	}
 
 	POKE(MMU_IO_CTRL, MMU_IO_PAGE_0);
 
