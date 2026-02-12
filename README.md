@@ -8,6 +8,8 @@ A port of [f256lib](https://github.com/FoenixRetro/f256-dev) to the [oscar64](ht
 
 - **Doodles** — the example programs in `doodles/` are ported from mu0n's [F256KsimpleCdoodles](https://github.com/Mu0n/F256KsimpleCdoodles), a collection of small programs and experiments for the F256K. These were originally written for the llvm-mos/clang toolchain.
 
+- **Tutorials** — the programs in `tutorials/` are ports of drmortalwombat's [OscarTutorials](https://github.com/drmortalwombat/OscarTutorials), a series of C64 programming tutorials for the oscar64 compiler, adapted for the F256K using f256lib.
+
 - **Examples** — the programs in `examples/` are adapted from the f256-dev examples by Scott Duensing.
 
 ## Building
@@ -26,6 +28,9 @@ Then build the examples and doodles:
 # Build all examples
 cd examples && make
 
+# Build all tutorials
+cd tutorials && make
+
 # Build all doodles
 cd doodles && make -k
 ```
@@ -39,6 +44,7 @@ parent/
 │       └── oscar64    # Compiled compiler binary
 └── f256lib-oscar64/   # This repository
     ├── examples/
+    ├── tutorials/
     └── doodles/
 ```
 
@@ -65,6 +71,11 @@ f256lib-oscar64/
 │   ├── overlay/      # Code overlay / bank switching demo
 │   ├── sprites/      # Sprite animation
 │   └── tilemap/      # Tilemap scrolling
+├── tutorials/        # Ported OscarTutorials (C64 → F256K)
+│   ├── 0010_helloworld/  # Hello World
+│   ├── 1300_staticsprite/ # Static sprite display
+│   ├── 1500_bitmappixels/ # Bitmap graphics
+│   └── ...           # 59 tutorials total
 └── doodles/          # Ported F256KsimpleCdoodles experiments
     ├── BachHero/     # Guitar Hero-style MIDI game
     ├── mandel/       # Mandelbrot fractal
