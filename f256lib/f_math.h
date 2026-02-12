@@ -4,8 +4,8 @@
  */
 
 
-#ifndef MATH_H
-#define MATH_H
+#ifndef F256_MATH_H
+#define F256_MATH_H
 #ifndef WITHOUT_MATH
 
 
@@ -25,4 +25,4 @@ uint32_t mathUnsignedMultiply(uint16_t a, uint16_t b);
 
 
 #endif
-#endif // MATH_H
+#endif // F256_MATH_H
