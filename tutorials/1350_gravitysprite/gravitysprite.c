@@ -45,13 +45,16 @@ int main(int argc, char *argv[])
 		sprites[i].vx = rand() % 81 - 40;
 		sprites[i].vy = rand() % 81 - 40;
 
-		spriteExpand(SpriteImage, i, 0);
-		spriteSet(i, true, sprites[i].sx >> FBITS, sprites[i].sy >> FBITS, i, 0);
+		spriteExpand(SpriteImage, i, 1);
+		spriteSet(i, true, sprites[i].sx >> FBITS, sprites[i].sy >> FBITS, i, 1);
 	}
+
+	byte prev_collflags = 0;
 
 	while (true)
 	{
 		byte collflags = spriteCheckCollisions();
+		byte changed = collflags ^ prev_collflags;
 
 		for (byte i = 0; i < 8; i++)
 		{
@@ -70,12 +73,16 @@ int main(int argc, char *argv[])
 
 			spriteMove(i, sprites[i].sx >> FBITS, sprites[i].sy >> FBITS);
 
-			byte new_color = (collflags & (1 << i)) ? 7 : 1;
-			spriteRecolor(i, SpriteImage, new_color);
+			if (changed & (1 << i))
+			{
+				byte new_color = (collflags & (1 << i)) ? 7 : 1;
+				spriteRecolor(i, SpriteImage, new_color);
+			}
 
 			// Apply gravity
 			sprites[i].vy++;
 		}
+		prev_collflags = collflags;
 		graphicsWaitVerticalBlank();
 	}
 
