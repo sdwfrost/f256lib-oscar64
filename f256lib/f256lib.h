@@ -59,6 +59,11 @@ typedef struct colorS {
 #define PEEK(addy)         ((byte)*(volatile byte *)(addy))
 #define POKE(addy, value)  (*(volatile byte *)(addy) = (value))
 
+// MMU / bank-register write — acts as a memory fence.
+// TODO: route through a proper volatile __memmap struct (like C128 mmu.h)
+// once the correct oscar64 pattern for POKE-style access is confirmed.
+#define POKE_MEMMAP(addy, value)  POKE(addy, value)
+
 // Word (two bytes)
 #define PEEKW(addy)        ((uint16_t)*(volatile uint16_t *)(addy))
 #define POKEW(addy, value) (*(volatile uint16_t *)(addy) = (value))
@@ -143,7 +148,7 @@ typedef struct colorS {
 	__asm volatile { sei }
 
 #define SWAP_IO_SHUTDOWN() \
-	POKE(MMU_MEM_BANK_7, sios_ram); \
+	POKE_MEMMAP(MMU_MEM_BANK_7, sios_ram); \
 	__asm volatile { cli }
 
 #else
@@ -154,7 +159,7 @@ typedef struct colorS {
 #endif
 
 #ifdef SWAP_RESTORE
-#define SWAP_RESTORE_SLOT()   POKE(SWAP_SLOT, SWAP_SLOT - MMU_MEM_BANK_0)
+#define SWAP_RESTORE_SLOT()   POKE_MEMMAP(SWAP_SLOT, SWAP_SLOT - MMU_MEM_BANK_0)
 #else
 #define SWAP_RESTORE_SLOT()
 #endif

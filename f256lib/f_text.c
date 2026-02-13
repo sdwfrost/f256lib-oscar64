@@ -45,14 +45,14 @@ void textClear(void) {
 	int16_t        count = mathUnsignedMultiply(_MAX_COL, _MAX_ROW);
 	volatile byte *vram  = (byte *)TEXT_MATRIX;
 
-	POKE(MMU_IO_CTRL, MMU_IO_TEXT);
+	POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_TEXT);
 	for (i=0; i<count; i++) *vram++ = 32;
 
-	POKE(MMU_IO_CTRL, MMU_IO_COLOR);
+	POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_COLOR);
 	vram = (byte *)TEXT_MATRIX;
 	for (i=0; i<count; i++) *vram++ = _ccolor;
 
-	POKE(MMU_IO_CTRL, mmu);
+	POKE_MEMMAP(MMU_IO_CTRL, mmu);
 
 	textGotoXY(0, 0);
 }
@@ -114,9 +114,9 @@ void textPrint(const char *message) {
 	while (message[x] != 0) {
 		switch (message[x]) {
 			default:
-				POKE(MMU_IO_CTRL, MMU_IO_COLOR);
+				POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_COLOR);
 				vram[_col] = _ccolor;
-				POKE(MMU_IO_CTRL, MMU_IO_TEXT);
+				POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_TEXT);
 				vram[_col] = message[x];
 				_col++;
 				if (_col != _MAX_COL) break;
@@ -128,18 +128,18 @@ void textPrint(const char *message) {
 				if (_row == _MAX_ROW) {
 					vram = (byte *)TEXT_MATRIX;
 					m = _MAX_COL * (_MAX_ROW - 1);
-					POKE(MMU_IO_CTRL, MMU_IO_COLOR);
+					POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_COLOR);
 					for (j=0; j<2; j++) {
 						for (i = 0; i < m; i++) {
 							vram[i] = vram[i + _MAX_COL];
 						}
-						POKE(MMU_IO_CTRL, MMU_IO_TEXT);
+						POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_TEXT);
 					}
 					vram += i;
 					save = vram;
-					POKE(MMU_IO_CTRL, MMU_IO_COLOR);
+					POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_COLOR);
 					for (i = 0; i < _MAX_COL; i++) *vram++ = _ccolor;
-					POKE(MMU_IO_CTRL, MMU_IO_TEXT);
+					POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_TEXT);
 					vram = save;
 					for (i = 0; i < _MAX_COL; i++) *vram++ = 32;
 					_row--;
@@ -152,7 +152,7 @@ void textPrint(const char *message) {
 		x++;
 	}
 
-	POKE(MMU_IO_CTRL, mmu);
+	POKE_MEMMAP(MMU_IO_CTRL, mmu);
 
 	textGotoXY(_col, _row);
 }
@@ -191,21 +191,21 @@ void textScrollUp(void) {
 	uint16_t       i;
 
 	// Scroll text matrix
-	POKE(MMU_IO_CTRL, MMU_IO_TEXT);
+	POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_TEXT);
 	for (i = 0; i < copy_count; i++)
 		vram[i] = vram[i + _MAX_COL];
 	for (i = copy_count; i < total; i++)
 		vram[i] = 32;
 
 	// Scroll color matrix
-	POKE(MMU_IO_CTRL, MMU_IO_COLOR);
+	POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_COLOR);
 	vram = (byte *)TEXT_MATRIX;
 	for (i = 0; i < copy_count; i++)
 		vram[i] = vram[i + _MAX_COL];
 	for (i = copy_count; i < total; i++)
 		vram[i] = _ccolor;
 
-	POKE(MMU_IO_CTRL, MMU_IO_PAGE_0);
+	POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_PAGE_0);
 }
 
 
@@ -238,22 +238,22 @@ void textPutChar(char c) {
 	} else {
 		volatile byte *vram = (byte *)mathUnsignedAddition(TEXT_MATRIX, mathUnsignedMultiply(_MAX_COL, _row));
 
-		POKE(MMU_IO_CTRL, MMU_IO_COLOR);
+		POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_COLOR);
 		vram[_col] = _ccolor;
-		POKE(MMU_IO_CTRL, MMU_IO_TEXT);
+		POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_TEXT);
 		vram[_col] = (byte)c;
-		POKE(MMU_IO_CTRL, MMU_IO_PAGE_0);
+		POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_PAGE_0);
 
 		textAdvanceCursor();
 	}
 	// Update hardware cursor
 	byte mmu = PEEK(MMU_IO_CTRL);
-	POKE(MMU_IO_CTRL, MMU_IO_PAGE_0);
+	POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_PAGE_0);
 	POKE(VKY_CRSR_X_L, _col);
 	POKE(VKY_CRSR_X_H, 0);
 	POKE(VKY_CRSR_Y_L, _row);
 	POKE(VKY_CRSR_Y_H, 0);
-	POKE(MMU_IO_CTRL, mmu);
+	POKE_MEMMAP(MMU_IO_CTRL, mmu);
 }
 
 
@@ -309,9 +309,9 @@ void textReadLine(char *buf, byte maxlen) {
 				textPutChar(' ');
 				_col--;
 				byte mmu = PEEK(MMU_IO_CTRL);
-				POKE(MMU_IO_CTRL, MMU_IO_PAGE_0);
+				POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_PAGE_0);
 				POKE(VKY_CRSR_X_L, _col);
-				POKE(MMU_IO_CTRL, mmu);
+				POKE_MEMMAP(MMU_IO_CTRL, mmu);
 			}
 		} else if (ch >= ' ' && i < maxlen) {
 			if (ch >= 'a' && ch <= 'z')

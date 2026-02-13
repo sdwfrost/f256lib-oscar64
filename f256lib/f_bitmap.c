@@ -25,7 +25,7 @@ static byte     _active;
 	uint32_t _bpp_address = _BITMAP_BASE[_active] + mathUnsignedAddition(mathUnsignedMultiply((py), _MAX_X), (int32_t)(px)); \
 	byte     _bpp_block   = _bpp_address / EIGHTK; \
 	_bpp_address &= 0x1FFF; \
-	POKE(SWAP_SLOT, _bpp_block); \
+	POKE_MEMMAP(SWAP_SLOT, _bpp_block); \
 	POKE(SWAP_ADDR + _bpp_address, _color); \
 } while(0)
 
@@ -42,10 +42,10 @@ void bitmapClear(void) {
 	SWAP_IO_SETUP();
 
 	for (x=0; x<9; x++) {
-		POKE(SWAP_SLOT, block++);
+		POKE_MEMMAP(SWAP_SLOT, block++);
 		for (c=0; c<EIGHTK; c++) mem[c] = _color;
 	}
-	POKE(SWAP_SLOT, block);
+	POKE_MEMMAP(SWAP_SLOT, block);
 	for (c=0; c<5120; c++) mem[c] = _color;
 
 	SWAP_RESTORE_SLOT();

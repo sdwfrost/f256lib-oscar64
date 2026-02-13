@@ -9,19 +9,19 @@
 
 void f256Init(void) {
 	// Swap I/O page 0 into bank 6.  This is our normal state.
-	POKE(MMU_IO_CTRL, MMU_IO_PAGE_0);
+	POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_PAGE_0);
 
 	POKE(VKY_MSTR_CTRL_0, 63); // Enable text and all graphics.
 
-	POKE(MMU_MEM_CTRL, 0xb3);  // MLUT editing enabled, editing 3, 3 is active.
+	POKE_MEMMAP(MMU_MEM_CTRL, 0xb3);  // MLUT editing enabled, editing 3, 3 is active.
 
 	// Set all memory slots to be CPU memory.
-	POKE(MMU_MEM_BANK_0, 0);
-	POKE(MMU_MEM_BANK_1, 1);
-	POKE(MMU_MEM_BANK_2, 2);
-	POKE(MMU_MEM_BANK_3, 3);
-	POKE(MMU_MEM_BANK_4, 4);
-	POKE(MMU_MEM_BANK_5, 5);
+	POKE_MEMMAP(MMU_MEM_BANK_0, 0);
+	POKE_MEMMAP(MMU_MEM_BANK_1, 1);
+	POKE_MEMMAP(MMU_MEM_BANK_2, 2);
+	POKE_MEMMAP(MMU_MEM_BANK_3, 3);
+	POKE_MEMMAP(MMU_MEM_BANK_4, 4);
+	POKE_MEMMAP(MMU_MEM_BANK_5, 5);
 	//POKE(MMU_MEM_BANK_6, 6);  // Don't use this - it's for the micro kernel.
 	//POKE(MMU_MEM_BANK_7, 7);  // Don't use this - it's for the micro kernel.
 
@@ -59,7 +59,7 @@ void f256Init(void) {
 
 void f256Reset(void) {
 	__asm volatile { sei }
-	POKE(MMU_MEM_BANK_7, 7);
+	POKE_MEMMAP(MMU_MEM_BANK_7, 7);
 	POKE(0xD6A2, 0xDE);
 	POKE(0xD6A3, 0xAD);
 	POKE(0xD6A0, 0xF0);
@@ -76,7 +76,7 @@ byte FAR_PEEK(uint32_t address) {
 
 	block = address / EIGHTK;
 	address &= 0x1FFF;
-	POKE(SWAP_SLOT, block);
+	POKE_MEMMAP(SWAP_SLOT, block);
 	result = PEEK(SWAP_ADDR + address);
 	SWAP_RESTORE_SLOT();
 
@@ -94,7 +94,7 @@ uint16_t FAR_PEEKW(uint32_t address) {
 
 	block = address / EIGHTK;
 	address &= 0x1FFF;
-	POKE(SWAP_SLOT, block);
+	POKE_MEMMAP(SWAP_SLOT, block);
 	result = PEEKW(SWAP_ADDR + address);
 	SWAP_RESTORE_SLOT();
 
@@ -110,7 +110,7 @@ void *FAR_POINTER(uint32_t address) {
 
 	block = address / EIGHTK;
 	address &= 0x1FFF;
-	POKE(SWAP_SLOT, block);
+	POKE_MEMMAP(SWAP_SLOT, block);
 	return (void *)address;
 #else
 	return 0;
@@ -125,7 +125,7 @@ void FAR_POKE(uint32_t address, byte value) {
 
 	block = address / EIGHTK;
 	address &= 0x1FFF;
-	POKE(SWAP_SLOT, block);
+	POKE_MEMMAP(SWAP_SLOT, block);
 	POKE(SWAP_ADDR + address, value);
 	SWAP_RESTORE_SLOT();
 
@@ -140,7 +140,7 @@ void FAR_POKEW(uint32_t address, uint16_t value) {
 
 	block = address / EIGHTK;
 	address &= 0x1FFF;
-	POKE(SWAP_SLOT, block);
+	POKE_MEMMAP(SWAP_SLOT, block);
 	POKEW(SWAP_ADDR + address, value);
 	SWAP_RESTORE_SLOT();
 

@@ -80,12 +80,12 @@ void spriteInitClut(void) {
 
 	// Entry 0: transparent (TinyVicky treats pixel value 0 as transparent)
 	byte mmu = PEEK(MMU_IO_CTRL);
-	POKE(MMU_IO_CTRL, MMU_IO_PAGE_1);
+	POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_PAGE_1);
 	POKE(VKY_GR_CLUT_0 + 0, 0);
 	POKE(VKY_GR_CLUT_0 + 1, 0);
 	POKE(VKY_GR_CLUT_0 + 2, 0);
 	POKE(VKY_GR_CLUT_0 + 3, 0);  // alpha = 0 -> transparent
-	POKE(MMU_IO_CTRL, mmu);
+	POKE_MEMMAP(MMU_IO_CTRL, mmu);
 }
 
 
@@ -129,7 +129,7 @@ void spriteInit(void) {
 	spriteInitClut();
 
 	// Enable sprite engine in master control
-	POKE(MMU_IO_CTRL, MMU_IO_PAGE_0);
+	POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_PAGE_0);
 	POKE(VKY_MSTR_CTRL_0, PEEK(VKY_MSTR_CTRL_0) | VKY_GRAPH | VKY_SPRITE);
 
 	spriteReset();

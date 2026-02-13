@@ -50,7 +50,7 @@ void graphicsDefineColor(byte clut, byte slot, byte r, byte g, byte b) {
 			break;
 	}
 
-	POKE(MMU_IO_CTRL, MMU_IO_PAGE_1);
+	POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_PAGE_1);
 
 	write = (byte *)gclut + (slot * 4);
 	*write++ = b;
@@ -58,7 +58,7 @@ void graphicsDefineColor(byte clut, byte slot, byte r, byte g, byte b) {
 	*write++ = r;
 	*write++ = 0xff;
 
-	POKE(MMU_IO_CTRL, mmu);
+	POKE_MEMMAP(MMU_IO_CTRL, mmu);
 }
 
 
@@ -113,11 +113,11 @@ void graphicsSetBackgroundC64Color(byte c) {
 
 void graphicsSetBackgroundRGB(byte r, byte g, byte b) {
 	byte mmu = PEEK(MMU_IO_CTRL);
-	POKE(MMU_IO_CTRL, MMU_IO_PAGE_0);
+	POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_PAGE_0);
 	POKE(VKY_BKG_COL_R, r);
 	POKE(VKY_BKG_COL_G, g);
 	POKE(VKY_BKG_COL_B, b);
-	POKE(MMU_IO_CTRL, mmu);
+	POKE_MEMMAP(MMU_IO_CTRL, mmu);
 }
 
 
@@ -129,11 +129,11 @@ void graphicsSetBorderC64Color(byte c) {
 
 void graphicsSetBorderRGB(byte r, byte g, byte b) {
 	byte mmu = PEEK(MMU_IO_CTRL);
-	POKE(MMU_IO_CTRL, MMU_IO_PAGE_0);
+	POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_PAGE_0);
 	POKE(VKY_BRDR_COL_R, r);
 	POKE(VKY_BRDR_COL_G, g);
 	POKE(VKY_BRDR_COL_B, b);
-	POKE(MMU_IO_CTRL, mmu);
+	POKE_MEMMAP(MMU_IO_CTRL, mmu);
 }
 
 
