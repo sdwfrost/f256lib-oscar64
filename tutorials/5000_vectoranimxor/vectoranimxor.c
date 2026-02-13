@@ -2,7 +2,8 @@
 // Ported from OscarTutorials to F256K using f256lib
 //
 // The C64 original uses XOR drawing for flicker-free erase.
-// F256K 8bpp bitmap has no XOR mode, so we clear and redraw each frame.
+// F256K 8bpp bitmap has no XOR mode, so we erase by redrawing
+// the previous frame's lines in the background color.
 
 #include "f256lib.h"
 
@@ -82,6 +83,12 @@ void calcStar(struct Point *c, int n, byte o, byte s)
 		c[i].x = x + 160;
 		c[i].y = y + 120;
 
+		// Clamp to screen bounds (bitmapLine has no clipping)
+		if (c[i].x < 0) c[i].x = 0;
+		if (c[i].x > 319) c[i].x = 319;
+		if (c[i].y < 0) c[i].y = 0;
+		if (c[i].y > 239) c[i].y = 239;
+
 		o = (o + 26) & 255;
 	}
 }
@@ -102,20 +109,23 @@ int main(int argc, char *argv[])
 
 	struct Point c[10];
 
+	// Initialize with first star (size 0, all vertices at center)
+	calcStar(c, 10, 0, 0);
+
 	for (;;)
 	{
 		for (int i = 0; i < 256; i++)
 		{
-			// Clear previous frame
-			bitmapSetColor(0);
-			bitmapClear();
+			graphicsWaitVerticalBlank();
 
-			// Calculate and draw new star
+			// Erase previous star and draw new one right after
+			// vblank, so both complete before the raster scans
+			bitmapSetColor(0);
+			drawCorners(c, 10);
+
 			calcStar(c, 10, (byte)i, (byte)i);
 			bitmapSetColor(1);
 			drawCorners(c, 10);
-
-			graphicsWaitVerticalBlank();
 		}
 	}
 

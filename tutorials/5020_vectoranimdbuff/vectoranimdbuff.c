@@ -90,6 +90,12 @@ void calcStar(struct Point *c, int n, byte o, byte s)
 		c[i].x = x + 160;
 		c[i].y = y + 120;
 
+		// Clamp to screen bounds (bitmapLine has no clipping)
+		if (c[i].x < 0) c[i].x = 0;
+		if (c[i].x > 319) c[i].x = 319;
+		if (c[i].y < 0) c[i].y = 0;
+		if (c[i].y > 239) c[i].y = 239;
+
 		o = (o + 26) & 255;
 	}
 }
