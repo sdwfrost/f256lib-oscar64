@@ -60,9 +60,10 @@ typedef struct colorS {
 #define POKE(addy, value)  (*(volatile byte *)(addy) = (value))
 
 // MMU / bank-register write — acts as a memory fence.
-// TODO: route through a proper volatile __memmap struct (like C128 mmu.h)
-// once the correct oscar64 pattern for POKE-style access is confirmed.
-#define POKE_MEMMAP(addy, value)  POKE(addy, value)
+// Routes through a volatile __memmap struct member (same pattern as C128 mmu.h)
+// so the compiler will not reorder any memory access across this store.
+struct __memmap_byte { volatile __memmap byte v; };
+#define POKE_MEMMAP(addy, value)  (((struct __memmap_byte *)(addy))->v = (value))
 
 // Word (two bytes)
 #define PEEKW(addy)        ((uint16_t)*(volatile uint16_t *)(addy))
