@@ -37,12 +37,13 @@ int main(int argc, char *argv[])
 		spriteSet(i, true, 20 + 30 * i, 40 + 20 * i, i, i + 8);
 	}
 
-	byte y = 0;
+	int y = 0;
 	while (true)
 	{
 		for (byte i = 0; i < 8; i++)
-			spriteMove(i, 20 + 30 * i, 40 + 20 * i + y);
+			spriteMove(i, 20 + 30 * i, (40 + 20 * i + y) % 240);
 		y++;
+		if (y >= 240) y = 0;
 		graphicsWaitVerticalBlank();
 	}
 
