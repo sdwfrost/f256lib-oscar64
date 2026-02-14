@@ -390,4 +390,367 @@ void textSetDouble(bool x, bool y) {
 }
 
 
+// --- Extended text functions ---
+
+
+void textSetCharAt(byte x, byte y, char c) {
+	byte     mmu    = PEEK(MMU_IO_CTRL);
+	uint16_t offset = (uint16_t)mathUnsignedMultiply(_MAX_COL, y) + x;
+
+	POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_TEXT);
+	POKE(TEXT_MATRIX + offset, (byte)c);
+	POKE_MEMMAP(MMU_IO_CTRL, mmu);
+}
+
+
+void textSetAttrAt(byte x, byte y, byte attr) {
+	byte     mmu    = PEEK(MMU_IO_CTRL);
+	uint16_t offset = (uint16_t)mathUnsignedMultiply(_MAX_COL, y) + x;
+
+	POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_COLOR);
+	POKE(TEXT_MATRIX + offset, attr);
+	POKE_MEMMAP(MMU_IO_CTRL, mmu);
+}
+
+
+void textSetCharAndAttrAt(byte x, byte y, char c, byte attr) {
+	byte     mmu    = PEEK(MMU_IO_CTRL);
+	uint16_t offset = (uint16_t)mathUnsignedMultiply(_MAX_COL, y) + x;
+
+	POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_TEXT);
+	POKE(TEXT_MATRIX + offset, (byte)c);
+	POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_COLOR);
+	POKE(TEXT_MATRIX + offset, attr);
+	POKE_MEMMAP(MMU_IO_CTRL, mmu);
+}
+
+
+char textGetCharAt(byte x, byte y) {
+	byte     mmu    = PEEK(MMU_IO_CTRL);
+	uint16_t offset = (uint16_t)mathUnsignedMultiply(_MAX_COL, y) + x;
+	char     result;
+
+	POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_TEXT);
+	result = (char)PEEK(TEXT_MATRIX + offset);
+	POKE_MEMMAP(MMU_IO_CTRL, mmu);
+
+	return result;
+}
+
+
+void textFillBox(byte x1, byte y1, byte x2, byte y2, char c, byte fore, byte back) {
+	byte     mmu  = PEEK(MMU_IO_CTRL);
+	byte     attr = (fore << 4) | back;
+	byte     y, x;
+
+	for (y = y1; y <= y2; y++) {
+		uint16_t row_offset = (uint16_t)mathUnsignedMultiply(_MAX_COL, y);
+
+		POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_TEXT);
+		for (x = x1; x <= x2; x++) {
+			POKE(TEXT_MATRIX + row_offset + x, (byte)c);
+		}
+
+		POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_COLOR);
+		for (x = x1; x <= x2; x++) {
+			POKE(TEXT_MATRIX + row_offset + x, attr);
+		}
+	}
+
+	POKE_MEMMAP(MMU_IO_CTRL, mmu);
+}
+
+
+void textFillBoxAttr(byte x1, byte y1, byte x2, byte y2, byte fore, byte back) {
+	byte     mmu  = PEEK(MMU_IO_CTRL);
+	byte     attr = (fore << 4) | back;
+	byte     y, x;
+
+	POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_COLOR);
+
+	for (y = y1; y <= y2; y++) {
+		uint16_t row_offset = (uint16_t)mathUnsignedMultiply(_MAX_COL, y);
+		for (x = x1; x <= x2; x++) {
+			POKE(TEXT_MATRIX + row_offset + x, attr);
+		}
+	}
+
+	POKE_MEMMAP(MMU_IO_CTRL, mmu);
+}
+
+
+void textInvertBox(byte x1, byte y1, byte x2, byte y2) {
+	byte     mmu = PEEK(MMU_IO_CTRL);
+	byte     y, x;
+
+	POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_COLOR);
+
+	for (y = y1; y <= y2; y++) {
+		uint16_t row_offset = (uint16_t)mathUnsignedMultiply(_MAX_COL, y);
+		for (x = x1; x <= x2; x++) {
+			uint16_t addr = TEXT_MATRIX + row_offset + x;
+			byte     val  = PEEK(addr);
+			// Swap foreground (high nibble) and background (low nibble)
+			POKE(addr, ((val & 0x0f) << 4) | ((val & 0xf0) >> 4));
+		}
+	}
+
+	POKE_MEMMAP(MMU_IO_CTRL, mmu);
+}
+
+
+void textDrawHLine(byte x, byte y, byte width, byte the_char, byte fore, byte back, byte draw_choice) {
+	byte     mmu        = PEEK(MMU_IO_CTRL);
+	byte     attr       = (fore << 4) | back;
+	uint16_t row_offset = (uint16_t)mathUnsignedMultiply(_MAX_COL, y);
+	byte     i;
+
+	if (draw_choice != TEXT_DRAW_ATTR_ONLY) {
+		POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_TEXT);
+		for (i = 0; i < width; i++) {
+			POKE(TEXT_MATRIX + row_offset + x + i, the_char);
+		}
+	}
+
+	if (draw_choice != TEXT_DRAW_CHAR_ONLY) {
+		POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_COLOR);
+		for (i = 0; i < width; i++) {
+			POKE(TEXT_MATRIX + row_offset + x + i, attr);
+		}
+	}
+
+	POKE_MEMMAP(MMU_IO_CTRL, mmu);
+}
+
+
+void textDrawVLine(byte x, byte y, byte height, byte the_char, byte fore, byte back, byte draw_choice) {
+	byte     mmu  = PEEK(MMU_IO_CTRL);
+	byte     attr = (fore << 4) | back;
+	byte     i;
+
+	for (i = 0; i < height; i++) {
+		uint16_t offset = (uint16_t)mathUnsignedMultiply(_MAX_COL, y + i) + x;
+
+		if (draw_choice != TEXT_DRAW_ATTR_ONLY) {
+			POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_TEXT);
+			POKE(TEXT_MATRIX + offset, the_char);
+		}
+
+		if (draw_choice != TEXT_DRAW_CHAR_ONLY) {
+			POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_COLOR);
+			POKE(TEXT_MATRIX + offset, attr);
+		}
+	}
+
+	POKE_MEMMAP(MMU_IO_CTRL, mmu);
+}
+
+
+void textDrawBox(byte x1, byte y1, byte x2, byte y2, byte fore, byte back) {
+	byte width  = x2 - x1 - 1;
+	byte height = y2 - y1 - 1;
+
+	// Corners
+	textSetCharAndAttrAt(x1, y1, CH_CORNER_ES, (fore << 4) | back);
+	textSetCharAndAttrAt(x2, y1, CH_CORNER_WS, (fore << 4) | back);
+	textSetCharAndAttrAt(x1, y2, CH_CORNER_NE, (fore << 4) | back);
+	textSetCharAndAttrAt(x2, y2, CH_CORNER_WN, (fore << 4) | back);
+
+	// Horizontal lines (top and bottom)
+	if (width > 0) {
+		textDrawHLine(x1 + 1, y1, width, CH_LINE_HORI, fore, back, TEXT_DRAW_CHAR_AND_ATTR);
+		textDrawHLine(x1 + 1, y2, width, CH_LINE_HORI, fore, back, TEXT_DRAW_CHAR_AND_ATTR);
+	}
+
+	// Vertical lines (left and right)
+	if (height > 0) {
+		textDrawVLine(x1, y1 + 1, height, CH_LINE_VERT, fore, back, TEXT_DRAW_CHAR_AND_ATTR);
+		textDrawVLine(x2, y1 + 1, height, CH_LINE_VERT, fore, back, TEXT_DRAW_CHAR_AND_ATTR);
+	}
+}
+
+
+byte textDrawStringAt(byte x, byte y, const char *s, byte fore, byte back) {
+	byte     mmu        = PEEK(MMU_IO_CTRL);
+	byte     attr       = (fore << 4) | back;
+	uint16_t row_offset = (uint16_t)mathUnsignedMultiply(_MAX_COL, y);
+	byte     count      = 0;
+
+	while (*s && (x + count) < _MAX_COL) {
+		uint16_t offset = row_offset + x + count;
+
+		POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_TEXT);
+		POKE(TEXT_MATRIX + offset, (byte)*s);
+		POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_COLOR);
+		POKE(TEXT_MATRIX + offset, attr);
+
+		s++;
+		count++;
+	}
+
+	POKE_MEMMAP(MMU_IO_CTRL, mmu);
+
+	return count;
+}
+
+
+void textCopyBoxToBuffer(byte x1, byte y1, byte x2, byte y2, byte *char_buf, byte *attr_buf) {
+	byte     mmu = PEEK(MMU_IO_CTRL);
+	byte     y, x;
+	uint16_t idx = 0;
+
+	for (y = y1; y <= y2; y++) {
+		uint16_t row_offset = (uint16_t)mathUnsignedMultiply(_MAX_COL, y);
+
+		if (char_buf) {
+			POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_TEXT);
+			for (x = x1; x <= x2; x++) {
+				char_buf[idx + (x - x1)] = PEEK(TEXT_MATRIX + row_offset + x);
+			}
+		}
+
+		if (attr_buf) {
+			POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_COLOR);
+			for (x = x1; x <= x2; x++) {
+				attr_buf[idx + (x - x1)] = PEEK(TEXT_MATRIX + row_offset + x);
+			}
+		}
+
+		idx += (x2 - x1 + 1);
+	}
+
+	POKE_MEMMAP(MMU_IO_CTRL, mmu);
+}
+
+
+void textCopyBoxFromBuffer(byte x1, byte y1, byte x2, byte y2, const byte *char_buf, const byte *attr_buf) {
+	byte     mmu = PEEK(MMU_IO_CTRL);
+	byte     y, x;
+	uint16_t idx = 0;
+
+	for (y = y1; y <= y2; y++) {
+		uint16_t row_offset = (uint16_t)mathUnsignedMultiply(_MAX_COL, y);
+
+		if (char_buf) {
+			POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_TEXT);
+			for (x = x1; x <= x2; x++) {
+				POKE(TEXT_MATRIX + row_offset + x, char_buf[idx + (x - x1)]);
+			}
+		}
+
+		if (attr_buf) {
+			POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_COLOR);
+			for (x = x1; x <= x2; x++) {
+				POKE(TEXT_MATRIX + row_offset + x, attr_buf[idx + (x - x1)]);
+			}
+		}
+
+		idx += (x2 - x1 + 1);
+	}
+
+	POKE_MEMMAP(MMU_IO_CTRL, mmu);
+}
+
+
+void textScrollRowsUp(byte y1, byte y2) {
+	byte     mmu = PEEK(MMU_IO_CTRL);
+	byte     y, x;
+
+	// Scroll text
+	POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_TEXT);
+	for (y = y1; y < y2; y++) {
+		uint16_t dst_offset = (uint16_t)mathUnsignedMultiply(_MAX_COL, y);
+		uint16_t src_offset = (uint16_t)mathUnsignedMultiply(_MAX_COL, y + 1);
+		for (x = 0; x < _MAX_COL; x++) {
+			POKE(TEXT_MATRIX + dst_offset + x, PEEK(TEXT_MATRIX + src_offset + x));
+		}
+	}
+	// Clear last row
+	{
+		uint16_t last_offset = (uint16_t)mathUnsignedMultiply(_MAX_COL, y2);
+		for (x = 0; x < _MAX_COL; x++) {
+			POKE(TEXT_MATRIX + last_offset + x, 32);
+		}
+	}
+
+	// Scroll attributes
+	POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_COLOR);
+	for (y = y1; y < y2; y++) {
+		uint16_t dst_offset = (uint16_t)mathUnsignedMultiply(_MAX_COL, y);
+		uint16_t src_offset = (uint16_t)mathUnsignedMultiply(_MAX_COL, y + 1);
+		for (x = 0; x < _MAX_COL; x++) {
+			POKE(TEXT_MATRIX + dst_offset + x, PEEK(TEXT_MATRIX + src_offset + x));
+		}
+	}
+	// Clear last row attributes
+	{
+		uint16_t last_offset = (uint16_t)mathUnsignedMultiply(_MAX_COL, y2);
+		for (x = 0; x < _MAX_COL; x++) {
+			POKE(TEXT_MATRIX + last_offset + x, _ccolor);
+		}
+	}
+
+	POKE_MEMMAP(MMU_IO_CTRL, mmu);
+}
+
+
+void textScrollRowsDown(byte y1, byte y2) {
+	byte     mmu = PEEK(MMU_IO_CTRL);
+	byte     y, x;
+
+	// Scroll text down
+	POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_TEXT);
+	for (y = y2; y > y1; y--) {
+		uint16_t dst_offset = (uint16_t)mathUnsignedMultiply(_MAX_COL, y);
+		uint16_t src_offset = (uint16_t)mathUnsignedMultiply(_MAX_COL, y - 1);
+		for (x = 0; x < _MAX_COL; x++) {
+			POKE(TEXT_MATRIX + dst_offset + x, PEEK(TEXT_MATRIX + src_offset + x));
+		}
+	}
+	// Clear first row
+	{
+		uint16_t first_offset = (uint16_t)mathUnsignedMultiply(_MAX_COL, y1);
+		for (x = 0; x < _MAX_COL; x++) {
+			POKE(TEXT_MATRIX + first_offset + x, 32);
+		}
+	}
+
+	// Scroll attributes down
+	POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_COLOR);
+	for (y = y2; y > y1; y--) {
+		uint16_t dst_offset = (uint16_t)mathUnsignedMultiply(_MAX_COL, y);
+		uint16_t src_offset = (uint16_t)mathUnsignedMultiply(_MAX_COL, y - 1);
+		for (x = 0; x < _MAX_COL; x++) {
+			POKE(TEXT_MATRIX + dst_offset + x, PEEK(TEXT_MATRIX + src_offset + x));
+		}
+	}
+	// Clear first row attributes
+	{
+		uint16_t first_offset = (uint16_t)mathUnsignedMultiply(_MAX_COL, y1);
+		for (x = 0; x < _MAX_COL; x++) {
+			POKE(TEXT_MATRIX + first_offset + x, _ccolor);
+		}
+	}
+
+	POKE_MEMMAP(MMU_IO_CTRL, mmu);
+}
+
+
+void textLoadFont(const byte *data, uint16_t len, bool primary_slot) {
+	byte           mmu   = PEEK(MMU_IO_CTRL);
+	uint16_t       i;
+	volatile byte *dest;
+
+	// Font memory is at 0xC000 in I/O page 0 (primary) or 0xC800 (secondary)
+	POKE_MEMMAP(MMU_IO_CTRL, MMU_IO_PAGE_0);
+	dest = (volatile byte *)(primary_slot ? 0xC000 : 0xC800);
+
+	for (i = 0; i < len; i++) {
+		dest[i] = data[i];
+	}
+
+	POKE_MEMMAP(MMU_IO_CTRL, mmu);
+}
+
+
 #endif

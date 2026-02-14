@@ -199,6 +199,9 @@ struct __memmap_byte { volatile __memmap byte v; };
 #include "f_vgmplay.h"
 #include "f_filepicker.h"
 #include "f_platform.h"
+#include "f_uart.h"
+#include "f_rtc.h"
+#include "f_general.h"
 
 
 // ============================================================

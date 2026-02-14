@@ -24,6 +24,22 @@ bool platformIsK2(void);
 bool platformHasCaseLCD(void);
 bool platformIsWave2(void);
 
+// Video mode control
+// Enables/disables individual graphics layers on VKY_MSTR_CTRL_0
+void platformSetGraphicMode(bool sprites, bool bitmaps, bool tiles, bool textOverlay, bool text);
+
+// Border control: set width (left+right) and height (top+bottom) in pixels
+void platformSetBorderSize(byte width, byte height);
+
+// Switch between primary and secondary font slot
+void platformSwitchFont(bool usePrimary);
+
+// Enable or disable the hardware text cursor
+void platformEnableTextCursor(bool enable);
+
+// Return the raw model ID byte from VKY_MID
+byte platformGetModelId(void);
+
 
 #pragma compile("f_platform.c")
 
