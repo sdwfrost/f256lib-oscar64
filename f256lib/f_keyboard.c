@@ -19,21 +19,21 @@ static char _kbd_map_event(void) {
 	if (kernelEventData.type != kernelEvent(key.PRESSED))
 		return 0;
 
+	// Check ASCII field for printable keys (flags < 0 means no ASCII available)
 	char c = kernelEventData.u.key.ascii;
-	if (c) {
-		// For printable keys, skip if modifier flags are set
-		if (kernelEventData.u.key.flags)
-			return 0;
+	if (c && !kernelEventData.u.key.flags)
 		return c;
-	}
 
-	// Arrow keys have no ASCII — map from raw scancode
-	// (checked regardless of flags since arrows are extended PS/2 keys)
+	// Map f256-microkernel raw key codes for non-ASCII or flagged keys.
+	// These values are defined by the microkernel (hardware/keys.asm),
+	// not raw PS/2 scancodes.
 	switch (kernelEventData.u.key.raw) {
-	case 0x75: return KEY_UP;
-	case 0x72: return KEY_DOWN;
-	case 0x6B: return KEY_LEFT;
-	case 0x74: return KEY_RIGHT;
+	case 0xB6: return KEY_UP;
+	case 0xB7: return KEY_DOWN;
+	case 0xB8: return KEY_LEFT;
+	case 0xB9: return KEY_RIGHT;
+	case 0x94: return 13;   // ENTER
+	case 0x95: return 27;   // ESC
 	}
 	return 0;
 }

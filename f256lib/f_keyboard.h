@@ -1,5 +1,5 @@
 /*
- *	PS/2 Keyboard support for the F256K.
+ *	Keyboard support for the F256 via f256-microkernel events.
  *	Adapted from f256k.h helper library.
  */
 
